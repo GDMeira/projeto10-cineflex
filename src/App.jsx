@@ -3,17 +3,35 @@ import HomePage from "./pages/HomePage/HomePage"
 import SeatsPage from "./pages/SeatsPage/SeatsPage"
 import SessionsPage from "./pages/SessionsPage/SessionsPage"
 import SuccessPage from "./pages/SuccessPage/SuccessPage"
+import { Route, Routes, BrowserRouter } from "react-router-dom"
+import { useState } from "react"
+import axios from "axios"
 
 export default function App() {
-    return (
-        <>
-           <NavContainer>CINEFLEX</NavContainer>
 
-            <HomePage />
+    axios.defaults.headers.common['Authorization'] = 'tcLOtEtNTsIr2R4Apzxsn8c5';
+
+    //n sei se vou usar, acho q terei q contruir todas as pgs com todas as rotas possiveis usando map
+    const [states, setStates] = useState({
+        idFilme: -1,
+        idSessao: -1,
+        idAssentos: []
+    });
+
+    return (
+        <BrowserRouter>
+           <NavContainer>CINEFLEX</NavContainer>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path={`/sessoes/:idMovie`} element={<SessionsPage />} />
+                <Route path={`/assentos/:idSession`} element={<SeatsPage />} />
+                <Route path="/sucesso" element={<SuccessPage />} />
+            </Routes>
+            
             {/* <SeatsPage /> */}
             {/* <SessionsPage /> */}
             {/* <SuccessPage /> */}
-        </>
+        </BrowserRouter>
     )
 }
 

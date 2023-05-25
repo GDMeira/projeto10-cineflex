@@ -1,17 +1,59 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom"
 import styled from "styled-components"
 
 export default function SeatsPage() {
+
+    const { idSession } = useParams();
+    const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/showtimes/${idSession}/seats`);
+    const [sessionSeats, setSessionseats] = useState(undefined);
+    const [selectedSeatsId, setSelectedSeatsId] = useState([]);
+
+    useEffect(() => {
+        promise.then(response => {
+            setSessionseats(response.data)
+        }).catch(error => {
+            alert(`Erro ao acessasr assentos \n ${error.response.data}`)
+        });
+    }, [idSession])
+
+    if (sessionSeats === undefined) {
+        return <h1>Carregando...</h1>
+    }
+    /* 
+    "seats": [
+				{
+            "id": 10001,
+            "name": "1",
+            "isAvailable": false,
+        },
+    */
+
+    function handleClick(selectedSeat) {
+        if (selectedSeat.isAvailable) {
+            if (selectedSeatsId.includes(selectedSeat.id)) {
+                setSelectedSeatsId(selectedSeatsId.filter(seatId => seatId !== selectedSeat.id));
+            } else {
+                setSelectedSeatsId([...selectedSeatsId, selectedSeat.id])
+            }
+        } else {
+            alert("Esse assento não está disponível");
+        }
+    }
 
     return (
         <PageContainer>
             Selecione o(s) assento(s)
 
             <SeatsContainer>
-                <SeatItem>01</SeatItem>
-                <SeatItem>02</SeatItem>
-                <SeatItem>03</SeatItem>
-                <SeatItem>04</SeatItem>
-                <SeatItem>05</SeatItem>
+                {sessionSeats.seats.map(seat => <SeatItem
+                    key={seat.id}
+                    onClick={() => handleClick(seat)}
+                    isAvailable={seat.isAvailable}
+                    isSelected={selectedSeatsId.includes(seat.id)}>
+                    {seat.name}
+                </SeatItem>)}
             </SeatsContainer>
 
             <CaptionContainer>
@@ -19,10 +61,12 @@ export default function SeatsPage() {
                     <CaptionCircle />
                     Selecionado
                 </CaptionItem>
+
                 <CaptionItem>
                     <CaptionCircle />
                     Disponível
                 </CaptionItem>
+
                 <CaptionItem>
                     <CaptionCircle />
                     Indisponível
@@ -41,11 +85,11 @@ export default function SeatsPage() {
 
             <FooterContainer>
                 <div>
-                    <img src={"https://br.web.img2.acsta.net/pictures/22/05/16/17/59/5165498.jpg"} alt="poster" />
+                    <img src={sessionSeats.movie.posterURL} alt="poster" />
                 </div>
                 <div>
-                    <p>Tudo em todo lugar ao mesmo tempo</p>
-                    <p>Sexta - 14h00</p>
+                    <p>{sessionSeats.movie.title}</p>
+                    <p>{sessionSeats.day.weekday} - {sessionSeats.name}</p>
                 </div>
             </FooterContainer>
 
@@ -94,10 +138,29 @@ const CaptionContainer = styled.div`
     width: 300px;
     justify-content: space-between;
     margin: 20px;
+
+    div:nth-child(1) {
+        div {
+            border: 1px solid #0E7D71;         // Essa cor deve mudar
+            background-color: #1AAE9E;
+        }
+    }
+
+    div:nth-child(2) {
+        div {
+            border: 1px solid #808F9D;         // Essa cor deve mudar
+            background-color: #C3CFD9;
+        }
+    }
+
+    div:nth-child(3) {
+        div {
+            border: 1px solid #F7C52B;         // Essa cor deve mudar
+            background-color: #FBE192;
+        }
+    }
 `
 const CaptionCircle = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
     height: 25px;
     width: 25px;
     border-radius: 25px;
@@ -113,8 +176,24 @@ const CaptionItem = styled.div`
     font-size: 12px;
 `
 const SeatItem = styled.div`
-    border: 1px solid blue;         // Essa cor deve mudar
-    background-color: lightblue;    // Essa cor deve mudar
+    border: 1px solid ${({ isAvailable, isSelected }) => {
+        if (!isAvailable) {
+            return '#F7C52B'
+        } else if (!isSelected) {
+            return '#808F9D'
+        } else {
+            return '#0E7D71'
+        }
+    }};
+    background-color: ${({ isAvailable, isSelected }) => {
+        if (!isAvailable) {
+            return '#FBE192'
+        } else if (!isSelected) {
+            return '#C3CFD9'
+        } else {
+            return '#1AAE9E'
+        }
+    }};
     height: 25px;
     width: 25px;
     border-radius: 25px;
