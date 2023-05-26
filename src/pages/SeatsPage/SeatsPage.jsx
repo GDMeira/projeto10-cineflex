@@ -11,7 +11,7 @@ export default function SeatsPage() {
             sessionSeats: undefined,
             selectedSeatsId: [],
             buyerName:'',
-            buyerCPF: 0
+            buyerCPF: ''
         });
 
     useEffect(() => updateSeats(), [idSession])
@@ -53,7 +53,7 @@ export default function SeatsPage() {
         const postObject = {
             ids: states.selectedSeatsId,
             name: states.buyerName,
-            cpf: states.buyerCPF
+            cpf: states.buyerCPF.split('').filter(char => char !== '.' && char !== '-').join('')
         };
         const promise = axios.post('https://mock-api.driven.com.br/api/v8/cineflex/seats/book-many',postObject);
         
@@ -71,6 +71,22 @@ export default function SeatsPage() {
             updateSeats();
         });
         
+    }
+
+    function adjustCPF(cpf) {
+        const cpfNum = cpf.split('').filter(char => char !== '.' && char !== '-');
+        let adjustedCPF = '';
+        cpfNum.forEach((n,i) => {
+            adjustedCPF += n;
+
+            if ((i === 2 && cpfNum.length > 3)|| (i === 5 && cpfNum.length > 6)) {
+                adjustedCPF += '.';
+            } else if ((i === 8 && cpfNum.length > 9)) {
+                adjustedCPF += '-';
+            }
+        });
+
+        return adjustedCPF
     }
 
     if (states.sessionSeats === undefined) {
@@ -120,11 +136,13 @@ export default function SeatsPage() {
                 />
 
                 <label htmlFor="cpf">CPF do Comprador:</label>
-                <input placeholder="Digite seu CPF..." 
+                <input placeholder="Digite seu CPF..."
                     id="cpf" 
                     name="cpf"
                     required 
-                    value={states.buyerCPF}
+                    value={adjustCPF(states.buyerCPF)}
+                    pattern="^[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}"
+                    maxlength="14"
                     onChange={e => setStates({...states, buyerCPF: e.target.value})}
                     data-test="client-cpf"
                 />
