@@ -4,7 +4,6 @@ import styled from "styled-components"
 export default function SuccessPage() {
     const navigate = useNavigate();
     const location = useLocation(); 
-    console.log(location);
     const states = location.state;
     // {
     //     sessionSeats: {
@@ -43,7 +42,7 @@ export default function SuccessPage() {
                 {states.selectedSeatsId.map(seatId => {
                     const seat = states.sessionSeats.seats.find(seat => seat.id === seatId);
                     const number = Number(seat.name) < 9 ? 0 + seat.name : seat.name;
-                    return <p>Assento {number}</p>
+                    return <p key={seat.id}>Assento {number}</p>
                 })}
             </TextContainer>
 

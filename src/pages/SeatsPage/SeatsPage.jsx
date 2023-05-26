@@ -141,8 +141,8 @@ export default function SeatsPage() {
                     name="cpf"
                     required 
                     value={adjustCPF(states.buyerCPF)}
-                    pattern="^[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}"
-                    maxlength="14"
+                    pattern="^[0-9]{3}[\.][0-9]{3}[\.][0-9]{3}[\-][0-9]{2}$"
+                    maxLength="14"
                     onChange={e => setStates({...states, buyerCPF: e.target.value})}
                     data-test="client-cpf"
                 />
