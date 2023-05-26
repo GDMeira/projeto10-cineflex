@@ -32,7 +32,7 @@ export default function SessionsPage() {
                             <ButtonsContainer>
                                 {session.showtimes.map(showtime => {
                                     return <Link to={`/assentos/${showtime.id}`} key={showtime.id}>
-                                        <button >{showtime.name}</button>
+                                        <button data-test="showtime">{showtime.name}</button>
                                     </Link>
                                 })}
                             </ButtonsContainer>
@@ -70,7 +70,9 @@ const PageContainer = styled.div`
         margin-top: 20px;
     }
 `
-const SessionContainer = styled.div`
+const SessionContainer = styled.div.attrs(({dataTest}) => ({
+    'data-test': dataTest || 'movie-day'
+}))`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -89,8 +91,11 @@ const ButtonsContainer = styled.div`
     a {
         text-decoration: none;
     }
+    &:hover {
+        cursor: pointer;
+    }
 `
-const FooterContainer = styled.div`
+const FooterContainer = styled.div.attrs(() => ({'data-test':'footer'}))`
     width: 100%;
     height: 120px;
     background-color: #C3CFD9;

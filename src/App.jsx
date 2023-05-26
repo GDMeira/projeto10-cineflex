@@ -27,10 +27,6 @@ export default function App() {
                 <Route path={`/assentos/:idSession`} element={<SeatsPage />} />
                 <Route path="/sucesso" element={<SuccessPage />} />
             </Routes>
-            
-            {/* <SeatsPage /> */}
-            {/* <SessionsPage /> */}
-            {/* <SuccessPage /> */}
         </BrowserRouter>
     )
 }

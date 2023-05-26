@@ -61,7 +61,9 @@ const ListContainer = styled.div`
     flex-direction: row;
     padding: 10px;
 `
-const MovieContainer = styled.div`
+const MovieContainer = styled.div.attrs(({dataTest}) => ({
+    'data-test': dataTest || 'movie'
+}))`
     width: 145px;
     height: 210px;
     box-shadow: 0px 2px 4px 2px #0000001A;
