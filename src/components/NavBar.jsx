@@ -7,7 +7,7 @@ export default function NavBar() {
 
     return (
     <NavContainer>
-        {(location.pathname !== '/' && location.pathname !== '/sucesso') && (
+        {(location.pathname !== '/') && (
             <button 
                 onClick={() => navigate(-1)}
                 data-test="go-home-header-btn"
