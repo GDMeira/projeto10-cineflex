@@ -2,13 +2,14 @@ import styled from "styled-components";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import SessionDay from "./SessionsDay";
 
 export default function SessionsPage() {
     const { idMovie } = useParams();
-    const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${idMovie}/showtimes`);
     const [movie, setMovie] = useState(undefined);
 
     useEffect(() => {
+        const promise = axios.get(`https://mock-api.driven.com.br/api/v8/cineflex/movies/${idMovie}/showtimes`);
         promise.then(response => {
             setMovie(response.data);
         }).catch(error => {
@@ -24,23 +25,7 @@ export default function SessionsPage() {
         <PageContainer>
             Selecione o horário
             <div>
-
-                {movie.days.map(session => {
-                    return (
-                        <SessionContainer key={session.id}>
-                            {session.weekday} - {session.date}
-                            <ButtonsContainer>
-                                {session.showtimes.map(showtime => {
-                                    return <Link to={`/assentos/${showtime.id}`} key={showtime.id}>
-                                        <button data-test="showtime">{showtime.name}</button>
-                                    </Link>
-                                })}
-                            </ButtonsContainer>
-                        </SessionContainer>
-                    )
-                })}
-
-                
+                {movie.days.map(session => <SessionDay session={session} />)}  
             </div>
 
             <FooterContainer>
@@ -70,31 +55,7 @@ const PageContainer = styled.div`
         margin-top: 20px;
     }
 `
-const SessionContainer = styled.div.attrs(({dataTest}) => ({
-    'data-test': dataTest || 'movie-day'
-}))`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    font-family: 'Roboto';
-    font-size: 20px;
-    color: #293845;
-    padding: 0 20px;
-`
-const ButtonsContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    margin: 20px 0;
-    button {
-        margin-right: 20px;
-    }
-    a {
-        text-decoration: none;
-    }
-    &:hover {
-        cursor: pointer;
-    }
-`
+
 const FooterContainer = styled.div.attrs(() => ({'data-test':'footer'}))`
     width: 100%;
     height: 120px;

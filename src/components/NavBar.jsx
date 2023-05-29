@@ -4,7 +4,7 @@ import styled from "styled-components";
 export default function NavBar() {
     const location = useLocation();
     const navigate = useNavigate();
-
+    // && location.pathname !== '/sucesso'
     return (
     <NavContainer>
         {(location.pathname !== '/') && (
